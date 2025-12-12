@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ============================================ -->
+    <!-- 🔍 META & TITLE -->
+    <!-- ============================================ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Neural AI - YouTube Sentiment & Trend Prediction System">
+    <meta name="keywords" content="AI, Sentiment Analysis, YouTube, Trends, Machine Learning">
+    <meta name="author" content="Engineering Student - Karunya University">
+    
+    <title>Dashboard - Neural AI v4.0 SUPREME</title>
+
+    <!-- ============================================ -->
+    <!-- 📚 STYLESHEETS -->
+    <!-- ============================================ -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- ============================================ -->
+    <!-- 🎨 INLINE STYLES FOR DASHBOARD -->
+    <!-- ============================================ -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ============================================ */
+        /* 🧭 NAVIGATION */
+        /* ============================================ */
+        nav {
+            background: rgba(20, 25, 35, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #00A8FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #00D4FF;
+        }
+
+        .status-btn {
+            background: linear-gradient(135deg, #00D4FF, #00A8FF);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .status-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        /* ============================================ */
+        /* 📦 MAIN CONTAINER */
+        /* ============================================ */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        /* ============================================ */
+        /* 📋 HEADER SECTION */
+        /* ============================================ */
+        .dashboard-header {
+            margin-bottom: 3rem;
+            animation: slideDown 0.5s ease;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .dashboard-header p {
+            color: #a0a0a0;
+            font-size: 1rem;
+        }
+
+        /* ============================================ */
+        /* 📊 STATS GRID */
+        /* ============================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 168, 255, 0.05));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            animation: slideUp 0.5s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00D4FF;
+        }
+
+        .stat-percentage {
+            color: #00FF00;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* ============================================ */
+        /* 📝 SECTION STYLES */
+        /* ============================================ */
+        .section {
+            background: linear-gradient(135deg, rgba(30, 40, 60, 0.5), rgba(20, 30, 50, 0.5));
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.6s ease;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-info {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00D4FF;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            color: #a0a0a0;
+        }
+
+        /* ============================================ */
+        /* 📝 FORM INPUTS */
+        /* ============================================ */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e0e0e0;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        textarea,
+        input[type="text"],
+        input[type="number"],
+        input[type="url"] {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus,
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #00D4FF;
+            background: rgba(0, 212, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* ============================================ */
+        /* 🔘 BUTTONS */
+        /* ============================================ */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00D4FF, #00A8FF);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ============================================ */
+        /* 🎴 RESULTS CARDS */
+        /* ============================================ */
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 168, 255, 0.05));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: slideUp 0.5s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 0 12px 30px rgba(0, 212, 255, 0.15);
+        }
+
+        .result-label {
+            color: #a0a0a0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00D4FF;
+            margin-bottom: 0.5rem;
+            word-break: break-word;
+        }
+
+        .result-percentage {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #00FF00;
+        }
+
+        .result-description {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-top: 0.75rem;
+        }
+
+        /* ============================================ */
+        /* 📏 FORM GRID */
+        /* ============================================ */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ============================================ */
+        /* 🎬 ANIMATIONS */
+        /* ============================================ */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ============================================ */
+        /* 📱 RESPONSIVE DESIGN */
+        /* ============================================ */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .status-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ============================================ -->
+    <!-- 🧭 NAVIGATION BAR -->
+    <!-- ============================================ -->
+    <nav>
+        <a href="/" class="logo">
+            <span>🧠</span>
+            <span>Neural AI</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard" class="active">Dashboard</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/youtube-analyzer">🎬 YouTube</a></li>
+            <li><button class="status-btn">✅ Status</button></li>
+        </ul>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- 📦 MAIN CONTAINER -->
+    <!-- ============================================ -->
+    <div class="container">
+        <!-- 📋 Header -->
+        <div class="dashboard-header">
+            <h1>📊 Dashboard</h1>
+            <p>Real-time sentiment analysis and trend prediction with AI-powered insights</p>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 📊 SYSTEM STATISTICS -->
+        <!-- ============================================ -->
+        <div class="stats-grid">
+            <!-- Emotion Accuracy -->
+            <div class="stat-card">
+                <div class="stat-icon">🧠</div>
+                <div class="stat-label">Emotion Accuracy</div>
+                <div class="stat-value" id="stat-emotion-accuracy">92%</div>
+                <div class="stat-percentage">AI Model</div>
+            </div>
+
+            <!-- Sentiment Accuracy -->
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">Sentiment Accuracy</div>
+                <div class="stat-value" id="stat-sentiment-accuracy">88%</div>
+                <div class="stat-percentage">Classification</div>
+            </div>
+
+            <!-- Response Time -->
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-label">Response Time</div>
+                <div class="stat-value" id="stat-response-time">&lt;500ms</div>
+                <div class="stat-percentage">Average</div>
+            </div>
+
+            <!-- Max Capacity -->
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-label">Max Capacity</div>
+                <div class="stat-value" id="stat-max-capacity">100+</div>
+                <div class="stat-percentage">Concurrent Users</div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 📝 QUICK TEXT ANALYSIS -->
+        <!-- ============================================ -->
+        <section class="section">
+            <h2>
+                <span>📝</span>
+                <span>Quick Text Analysis</span>
+            </h2>
+
+            <div class="section-info">
+                <strong>Try it now:</strong> Enter any text to analyze its emotion and sentiment in real-time using our advanced DistilBERT models.
+            </div>
+
+            <!-- Text Input -->
+            <div class="form-group">
+                <label for="text-input">Enter Text to Analyze</label>
+                <textarea 
+                    id="text-input" 
+                    placeholder="Type or paste your text here... (3-5000 characters)"
+                    maxlength="5000">I am absolutely thrilled and delighted about this amazing opportunity!</textarea>
+            </div>
+
+            <!-- Analyze Button -->
+            <button class="btn btn-primary" id="analyze-btn">
+                <span>🔍</span>
+                <span>Analyze Text</span>
+            </button>
+
+            <!-- Results Section -->
+            <div class="results-section" id="results-section" style="display: none;">
+                <!-- Emotion Result -->
+                <div class="result-card">
+                    <div class="result-label">😊 Emotion</div>
+                    <div class="result-value" id="result-emotion-value">-</div>
+                    <div class="result-percentage" id="result-emotion-confidence">0%</div>
+                    <div class="result-description">Confidence</div>
+                </div>
+
+                <!-- Sentiment Result -->
+                <div class="result-card">
+                    <div class="result-label">🔥 Sentiment</div>
+                    <div class="result-value" id="result-sentiment-value">-</div>
+                    <div class="result-percentage" id="result-sentiment-confidence">0%</div>
+                    <div class="result-description">Confidence</div>
+                </div>
+
+                <!-- Overall Score -->
+                <div class="result-card">
+                    <div class="result-label">⭐ Overall Score</div>
+                    <div class="result-value" id="result-overall-score">0%</div>
+                    <div class="result-description">Combined confidence</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- 🚀 VIRAL PREDICTION -->
+        <!-- ============================================ -->
+        <section class="section">
+            <h2>
+                <span>🚀</span>
+                <span>Predict Viral Potential</span>
+            </h2>
+
+            <div class="section-info">
+                <strong>Predict viral potential:</strong> Enter YouTube video metrics to predict if the video will likely go viral using XGBoost analysis with 34 engineered features.
+            </div>
+
+            <!-- Form Grid -->
+            <div class="form-grid">
+                <!-- Likes Input -->
+                <div class="form-group">
+                    <label for="input-likes">Likes</label>
+                    <input 
+                        type="number" 
+                        id="input-likes" 
+                        placeholder="e.g., 15000"
+                        value="15000"
+                        min="0">
+                </div>
+
+                <!-- Comments Input -->
+                <div class="form-group">
+                    <label for="input-comments">Comments</label>
+                    <input 
+                        type="number" 
+                        id="input-comments" 
+                        placeholder="e.g., 3500"
+                        value="3500"
+                        min="0">
+                </div>
+
+                <!-- Shares Input -->
+                <div class="form-group">
+                    <label for="input-shares">Shares</label>
+                    <input 
+                        type="number" 
+                        id="input-shares" 
+                        placeholder="e.g., 500"
+                        value="500"
+                        min="0">
+                </div>
+
+                <!-- Views Input -->
+                <div class="form-group">
+                    <label for="input-views">Views</label>
+                    <input 
+                        type="number" 
+                        id="input-views" 
+                        placeholder="e.g., 500000"
+                        value="500000"
+                        min="0">
+                </div>
+
+                <!-- Engagement Rate -->
+                <div class="form-group">
+                    <label for="input-engagement">Engagement Rate</label>
+                    <input 
+                        type="number" 
+                        id="input-engagement" 
+                        placeholder="e.g., 3.5"
+                        value="3.5"
+                        min="0"
+                        step="0.1">
+                </div>
+
+                <!-- Sentiment Score -->
+                <div class="form-group">
+                    <label for="input-sentiment">Sentiment Score</label>
+                    <input 
+                        type="number" 
+                        id="input-sentiment" 
+                        placeholder="e.g., 0.75"
+                        value="0.75"
+                        min="0"
+                        max="1"
+                        step="0.01">
+                </div>
+
+                <!-- Emotion Intensity -->
+                <div class="form-group">
+                    <label for="input-emotion">Emotion Intensity</label>
+                    <input 
+                        type="number" 
+                        id="input-emotion" 
+                        placeholder="e.g., 0.85"
+                        value="0.85"
+                        min="0"
+                        max="1"
+                        step="0.01">
+                </div>
+            </div>
+
+            <!-- Predict Button -->
+            <button class="btn btn-primary" id="predict-btn">
+                <span>🎯</span>
+                <span>Predict Viral Potential</span>
+            </button>
+
+            <!-- Prediction Result -->
+            <div class="results-section" id="prediction-section" style="display: none;">
+                <div class="result-card">
+                    <div class="result-label">🎬 Prediction</div>
+                    <div class="result-value" id="prediction-result">-</div>
+                    <div class="result-percentage" id="prediction-probability">0%</div>
+                    <div class="result-description">Viral Probability</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- 🎬 YOUTUBE ANALYZER -->
+        <!-- ============================================ -->
+        <section class="section">
+            <h2>
+                <span>🎬</span>
+                <span>YouTube Video Analysis</span>
+            </h2>
+
+            <div class="section-info">
+                <strong>Analyze YouTube videos:</strong> Paste a YouTube URL to analyze comments, sentiment distribution, and trending topics from the video.
+            </div>
+
+            <!-- URL Input -->
+            <div class="form-group">
+                <label for="youtube-url">YouTube Video URL</label>
+                <input 
+                    type="url" 
+                    id="youtube-url" 
+                    placeholder="Paste YouTube URL here..."
+                    value="">
+            </div>
+
+            <!-- Analyze Button -->
+            <button class="btn btn-primary" id="youtube-analyze-btn">
+                <span>🔍</span>
+                <span>Analyze YouTube Video</span>
+            </button>
+
+            <!-- YouTube Results - FIXED VERSION - NO INLINE STYLES -->
+            <div class="results-section" id="youtube-results-section" style="display: none;">
+                <!-- Video Title -->
+                <div class="result-card">
+                    <div class="result-label">📹 Video Title</div>
+                    <div class="result-value" id="result-title">-</div>
+                </div>
+
+                <!-- Channel Name -->
+                <div class="result-card">
+                    <div class="result-label">📺 Channel</div>
+                    <div class="result-value" id="result-channel">-</div>
+                </div>
+
+                <!-- Views -->
+                <div class="result-card">
+                    <div class="result-label">👁️ Views</div>
+                    <div class="result-value" id="result-views">0</div>
+                </div>
+
+                <!-- Comments -->
+                <div class="result-card">
+                    <div class="result-label">💬 Comments</div>
+                    <div class="result-value" id="result-comments">0</div>
+                </div>
+
+                <!-- Positive Sentiment -->
+                <div class="result-card">
+                    <div class="result-label">👍 Positive</div>
+                    <div class="result-value" id="result-positive-count">0</div>
+                </div>
+
+                <!-- Neutral Sentiment -->
+                <div class="result-card">
+                    <div class="result-label">➖ Neutral</div>
+                    <div class="result-value" id="result-neutral-count">0</div>
+                </div>
+
+                <!-- Negative Sentiment -->
+                <div class="result-card">
+                    <div class="result-label">👎 Negative</div>
+                    <div class="result-value" id="result-negative-count">0</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- 📄 FOOTER INFO -->
+        <!-- ============================================ -->
+        <div style="text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(0, 212, 255, 0.1);">
+            <p style="color: #a0a0a0; font-size: 0.9rem;">
+                <strong>Neural AI v4.0 SUPREME</strong> | 
+                Advanced YouTube Sentiment & Trend Prediction System | 
+                <strong>Production Ready ✅</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 📚 SCRIPTS -->
+    <!-- ============================================ -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

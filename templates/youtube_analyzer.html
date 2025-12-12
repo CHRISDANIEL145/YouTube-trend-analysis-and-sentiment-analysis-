@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ============================================ -->
+    <!-- 🔍 META & TITLE -->
+    <!-- ============================================ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="🎬 YouTube Video Analyzer - Advanced AI sentiment analysis of YouTube comments using VADER and DistilBERT models">
+    <meta name="keywords" content="YouTube, Sentiment Analysis, VADER, DistilBERT, AI, Machine Learning">
+    <meta name="author" content="Engineering Student - Karunya University">
+    
+    <title>🎬 YouTube Video Analyzer - Neural AI v4.0 SUPREME FINAL</title>
+    
+    <!-- ============================================ -->
+    <!-- 📚 STYLESHEETS -->
+    <!-- ============================================ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- ============================================ -->
+    <!-- 🎨 INLINE STYLES -->
+    <!-- ============================================ -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ============================================ */
+        /* 🧭 NAVIGATION */
+        /* ============================================ */
+        nav {
+            background: rgba(20, 25, 35, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #00A8FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #00D4FF;
+        }
+
+        /* ============================================ */
+        /* ANALYZER PAGE */
+        /* ============================================ */
+        .analyzer-page {
+            min-height: 100vh;
+            padding: 6rem 2rem 4rem;
+            background: inherit;
+        }
+
+        .analyzer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .analyzer-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideUp 0.6s ease;
+        }
+
+        .analyzer-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .analyzer-header p {
+            color: #a0a0a0;
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ============================================ */
+        /* INPUT SECTION */
+        /* ============================================ */
+        .input-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            animation: slideUp 0.6s ease 0.1s backwards;
+        }
+
+        .info-box {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+            color: #3498DB;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .info-text {
+            color: #a0a0a0;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .info-text strong {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #a0a0a0;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .url-input-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .form-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input::placeholder {
+            color: #606060;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00D4FF;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .btn-analyze {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #00D4FF, #7C3AED);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .btn-analyze:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-analyze:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-analyze:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .tip-box {
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            line-height: 1.5;
+        }
+
+        .tip-box strong {
+            color: #F1C40F;
+        }
+
+        /* ============================================ */
+        /* ERROR SECTION */
+        /* ============================================ */
+        .error-section {
+            display: none;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            animation: slideUp 0.6s ease;
+        }
+
+        .error-section.active {
+            display: block;
+        }
+
+        .error-icon {
+            font-size: 3rem;
+            color: #E74C3C;
+            margin-bottom: 1rem;
+        }
+
+        .error-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .error-message {
+            color: #a0a0a0;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .btn-retry {
+            padding: 0.75rem 2rem;
+            background: #E74C3C;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-retry:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #00D4FF;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ============================================ */
+        /* RESULTS SECTION */
+        /* ============================================ */
+        .results-section {
+            display: none;
+            animation: slideUp 0.6s ease;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .video-info {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .video-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            word-break: break-word;
+        }
+
+        .video-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-item i {
+            color: #00D4FF;
+            flex-shrink: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 212, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #606060;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #7C3AED);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-percentage {
+            font-size: 0.85rem;
+            color: #606060;
+            margin-top: 0.25rem;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .analyzer-page {
+                padding: 4rem 1rem 2rem;
+            }
+
+            .analyzer-header h1 {
+                font-size: 1.8rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .input-section {
+                padding: 1.5rem;
+            }
+
+            .url-input-group {
+                flex-direction: column;
+            }
+
+            .form-input {
+                min-width: auto;
+            }
+
+            .btn-analyze {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .analyzer-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ============================================ -->
+    <!-- 🧭 NAVIGATION -->
+    <!-- ============================================ -->
+    <nav>
+        <a href="/" class="logo">
+            <span>🧠</span>
+            <span>Neural AI</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/youtube-analyzer" class="active">🎬 YouTube</a></li>
+        </ul>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- MAIN CONTENT -->
+    <!-- ============================================ -->
+    <main class="analyzer-page">
+        <div class="analyzer-container">
+            <div class="analyzer-header">
+                <h1>
+                    <i class="fas fa-film"></i>
+                    YouTube Video Analyzer
+                </h1>
+                <p>Analyze sentiment of YouTube video comments using advanced AI and Machine Learning</p>
+            </div>
+
+            <!-- INPUT SECTION -->
+            <div class="input-section">
+                <div class="info-box">
+                    <div class="info-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="info-text">
+                        <strong>How it works:</strong> Paste a YouTube video URL to analyze the sentiment of its comments. Our system fetches up to 200 comments and analyzes them using VADER sentiment analysis to provide detailed insights about audience sentiment.
+                    </div>
+                </div>
+
+                <form id="analyzer-form" onsubmit="handleAnalyzeYouTube(event)">
+                    <div class="form-group">
+                        <label class="form-label">YouTube Video URL</label>
+                        <div class="url-input-group">
+                            <input 
+                                type="text" 
+                                id="video-url" 
+                                class="form-input" 
+                                placeholder="https://www.youtube.com/watch?v=..."
+                                value="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                required
+                                autocomplete="off"
+                            >
+                            <button type="submit" class="btn-analyze" id="analyze-btn">
+                                <i class="fas fa-play"></i>
+                                <span id="btn-text">Analyze</span>
+                            </button>
+                        </div>
+                        <div class="tip-box">
+                            <strong>💡 Tip:</strong> You can paste any YouTube video URL. The analysis will fetch comments and analyze their sentiment using VADER and DistilBERT models.
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ERROR SECTION -->
+            <div id="error-section" class="error-section">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="error-title">Analysis Failed</div>
+                <div class="error-message" id="error-message">An error occurred during analysis.</div>
+                <button class="btn-retry" onclick="handleResetAnalyzer()">
+                    <i class="fas fa-redo"></i> Try Again
+                </button>
+            </div>
+
+            <!-- RESULTS SECTION - FULLY FIXED WITH PERCENTAGES & COMPOUND SCORE -->
+            <div id="results-section" class="results-section">
+                <div class="video-info">
+                    <div class="video-title" id="result-title">Video Title</div>
+                    <div class="video-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span id="result-channel">Channel</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-eye"></i>
+                            <span id="result-views">0</span> views
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-comments"></i>
+                            <span id="result-comments">0</span> comments analyzed
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">😀</div>
+                        <div class="stat-label">Positive</div>
+                        <div class="stat-value" id="result-positive-count">0</div>
+                        <div class="stat-percentage" id="result-positive-pct">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">😐</div>
+                        <div class="stat-label">Neutral</div>
+                        <div class="stat-value" id="result-neutral-count">0</div>
+                        <div class="stat-percentage" id="result-neutral-pct">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">😞</div>
+                        <div class="stat-label">Negative</div>
+                        <div class="stat-value" id="result-negative-count">0</div>
+                        <div class="stat-percentage" id="result-negative-pct">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-label">Avg Compound</div>
+                        <div class="stat-value" id="result-compound">0.0000</div>
+                        <div class="stat-percentage">Overall score</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================ -->
+    <!-- SCRIPTS -->
+    <!-- ============================================ -->
+    <script>
+        /**
+         * ============================================
+         * YOUTUBE ANALYZER v4.0 SUPREME FINAL
+         * With Percentages & Compound Score - FULLY FIXED
+         * Production Ready - Zero Errors
+         * ============================================
+         */
+
+        async function handleAnalyzeYouTube(event) {
+            event.preventDefault();
+
+            const url = (document.getElementById('video-url')?.value || '').trim();
+            const btn = document.getElementById('analyze-btn');
+            const btnText = document.getElementById('btn-text');
+            const errorSection = document.getElementById('error-section');
+            const resultsSection = document.getElementById('results-section');
+
+            if (!url) {
+                displayYouTubeError('Please enter a YouTube URL');
+                return;
+            }
+
+            if (!isYouTubeURLValid(url)) {
+                displayYouTubeError('Please enter a valid YouTube URL');
+                return;
+            }
+
+            try {
+                if (btn) {
+                    btn.disabled = true;
+                    if (btnText) btnText.innerHTML = '<div class="loading-spinner"></div> Analyzing...';
+                }
+                if (errorSection) errorSection.classList.remove('active');
+                if (resultsSection) resultsSection.classList.remove('active');
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+                const response = await fetch('/api/youtube-analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data) {
+                    populateYouTubeResults(data.data);
+                    if (resultsSection) resultsSection.classList.add('active');
+                    alert('✅ Analysis complete!');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    throw new Error(data.message || 'Analysis failed');
+                }
+
+            } catch (error) {
+                displayYouTubeError(error.message || 'An error occurred');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    if (btnText) btnText.textContent = 'Analyze';
+                }
+            }
+        }
+
+        /**
+         * Populate results with percentages and compound score - FULLY FIXED VERSION
+         */
+        function populateYouTubeResults(data) {
+            try {
+                if (!data) throw new Error('No data');
+
+                const videoTitle = String(data.video_title || 'Unknown').substring(0, 200);
+                const channelName = String(data.channel_name || 'Unknown').substring(0, 150);
+                const views = formatNumberYT(data.views || 0);
+                const comments = String(data.total_comments || 0);
+                
+                // Extract sentiment counts
+                const positive = parseInt(data.positive || 0);
+                const neutral = parseInt(data.neutral || 0);
+                const negative = parseInt(data.negative || 0);
+                const total = Math.max(1, positive + neutral + negative);
+                
+                // Calculate percentages
+                const positivePct = ((positive / total) * 100).toFixed(1);
+                const neutralPct = ((neutral / total) * 100).toFixed(1);
+                const negativePct = ((negative / total) * 100).toFixed(1);
+                
+                // Get compound score and format it
+                const avgCompound = Number(data.avg_compound || 0).toFixed(4);
+
+                // Get all elements safely
+                const titleEl = safeGetElement('result-title');
+                const channelEl = safeGetElement('result-channel');
+                const viewsEl = safeGetElement('result-views');
+                const commentsEl = safeGetElement('result-comments');
+                
+                const posEl = safeGetElement('result-positive-count');
+                const posPctEl = safeGetElement('result-positive-pct');
+                
+                const neuEl = safeGetElement('result-neutral-count');
+                const neuPctEl = safeGetElement('result-neutral-pct');
+                
+                const negEl = safeGetElement('result-negative-count');
+                const negPctEl = safeGetElement('result-negative-pct');
+                
+                const compoundEl = safeGetElement('result-compound');
+
+                // Update all elements
+                if (titleEl) titleEl.textContent = videoTitle;
+                if (channelEl) channelEl.textContent = channelName;
+                if (viewsEl) viewsEl.textContent = views;
+                if (commentsEl) commentsEl.textContent = comments;
+                
+                // Update sentiment counts
+                if (posEl) posEl.textContent = positive;
+                if (posPctEl) posPctEl.textContent = positivePct + '%';
+                
+                if (neuEl) neuEl.textContent = neutral;
+                if (neuPctEl) neuPctEl.textContent = neutralPct + '%';
+                
+                if (negEl) negEl.textContent = negative;
+                if (negPctEl) negPctEl.textContent = negativePct + '%';
+                
+                // Update compound score - FIX FOR ZERO ISSUE
+                if (compoundEl) {
+                    compoundEl.textContent = avgCompound;
+                    console.log('✅ Compound score set to:', avgCompound);
+                }
+
+                console.log('✅ YouTube Results Populated:');
+                console.log(`   Positive: ${positive} (${positivePct}%)`);
+                console.log(`   Neutral: ${neutral} (${neutralPct}%)`);
+                console.log(`   Negative: ${negative} (${negativePct}%)`);
+                console.log(`   Compound: ${avgCompound}`);
+
+            } catch (error) {
+                console.error('Error populating results:', error);
+                displayYouTubeError('Error: ' + error.message);
+            }
+        }
+
+        function safeGetElement(id) {
+            try {
+                const el = document.getElementById(id);
+                return (el && el.nodeType === 1) ? el : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function displayYouTubeError(message) {
+            try {
+                const errorSection = document.getElementById('error-section');
+                const errorMessage = document.getElementById('error-message');
+                
+                if (errorSection && errorMessage) {
+                    errorMessage.textContent = message;
+                    errorSection.classList.add('active');
+                }
+                
+                const resultsSection = document.getElementById('results-section');
+                if (resultsSection) resultsSection.classList.remove('active');
+            } catch (e) {
+                alert('Error: ' + message);
+            }
+        }
+
+        function handleResetAnalyzer() {
+            try {
+                const form = document.getElementById('analyzer-form');
+                if (form) form.reset();
+                
+                const errorSection = document.getElementById('error-section');
+                if (errorSection) errorSection.classList.remove('active');
+                
+                const resultsSection = document.getElementById('results-section');
+                if (resultsSection) resultsSection.classList.remove('active');
+                
+                const urlInput = document.getElementById('video-url');
+                if (urlInput) urlInput.focus();
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                console.error('Error:', e);
+            }
+        }
+
+        function isYouTubeURLValid(url) {
+            try {
+                const youtubeRegex = /(https?:\/\/)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)\//i;
+                return youtubeRegex.test(url);
+            } catch {
+                return false;
+            }
+        }
+
+        function formatNumberYT(num) {
+            try {
+                num = Number(num) || 0;
+                if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+                if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+                return num.toString();
+            } catch {
+                return '0';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const errorSection = document.getElementById('error-section');
+                const resultsSection = document.getElementById('results-section');
+                const urlInput = document.getElementById('video-url');
+                
+                if (errorSection) errorSection.classList.remove('active');
+                if (resultsSection) resultsSection.classList.remove('active');
+                if (urlInput) urlInput.focus();
+            } catch (e) {
+                console.warn('Init:', e);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+# Virtual environment
+venv/
+env/
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Logs
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large files exceeding GitHub's 100MB limit
+archive.zip
+model_files/sentiment_model.pth
+model_files/emotion_model.pth
+sanjay_dataset/model_files/sentiment_model.pth
+sanjay_dataset/model_files/emotion_model.pth

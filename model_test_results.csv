@@ -1,0 +1,9 @@
+Scenario,Category,Title,Likes,Dislikes,Comments,L/D Ratio,Engagement Score,Viral,Probability,Confidence
+Low Engagement Video,😴,My daily vlog,500,10,50,45.45454545454545,275.0,No,0.00043467257637530565,High
+Medium Engagement - Educational,📚,Top 10 Python Tips for Beginners 2025,25000,500,5000,49.9001996007984,15000.0,No,0.023454388603568077,High
+High Engagement - Breaking News,🔥,BREAKING: Major AI Breakthrough! Everything Change,150000,3000,50000,49.983338887037654,100000.0,Yes,0.8726879954338074,High
+Controversial - Debate,⚡,The TRUTH About Social Media - They Don't Want You,80000,8000,35000,9.998750156230471,57500.0,Yes,0.973243772983551,High
+Entertainment - Gaming,🎮,Epic Gaming Moments Compilation 2025 - CRAZY PLAYS,45000,800,12000,56.17977528089887,28500.0,Yes,0.508907675743103,Low
+Music - Official Video,🎵,[Official Video] New Song 2025 - Amazing Artist,200000,1500,80000,133.24450366422386,140000.0,Yes,0.9346808195114136,High
+Minimal Content,🤷,Video,100,5,10,16.666666666666668,55.0,No,0.0006615331512875855,High
+Maximum Engagement,🚀,YOU WON'T BELIEVE WHAT HAPPENED! SHOCKING? OMG!!!,500000,25000,250000,19.99920003199872,375000.0,Yes,0.9859122633934021,High

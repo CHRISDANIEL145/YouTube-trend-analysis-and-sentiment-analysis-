@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="YouTube Sentiment Results - View detailed sentiment analysis results from analyzed YouTube videos with Plotly visualizations">
+    <meta name="keywords" content="YouTube, Sentiment, Results, Analysis, Comments, Visualization, Charts">
+    
+    <title>📈 YouTube Sentiment Results - Neural AI v4.0</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' fill='%2300D4FF'>📈</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6usKGiOxPeZA0cY56n24VzijHmsWmNvTail/UNNQGm3CX2K/l+PRnIy+MD/QAxg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <style>
+        /* ============================================
+           YOUTUBE SENTIMENT RESULTS PAGE v4.0
+           ============================================ */
+
+        .sentiment-page {
+            min-height: 100vh;
+            padding: 6rem 2rem 4rem;
+            background: var(--bg-dark);
+        }
+
+        .sentiment-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .sentiment-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideUp 0.6s ease;
+        }
+
+        .sentiment-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .sentiment-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            animation: slideUp 0.6s ease 0.1s backwards;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-text {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00D4FF, #7C3AED);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            animation: slideUp 0.6s ease backwards;
+        }
+
+        .feature-box:nth-child(1) { animation-delay: 0.2s; }
+        .feature-box:nth-child(2) { animation-delay: 0.3s; }
+        .feature-box:nth-child(3) { animation-delay: 0.4s; }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #00D4FF;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Results Display */
+        .results-section {
+            display: none;
+            animation: slideUp 0.6s ease;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        /* Video Info Card */
+        .video-info-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .video-header {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .video-thumbnail {
+            width: 150px;
+            height: 85px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-details h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 212, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #7C3AED);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            border-color: rgba(0, 212, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .chart-card > div {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Examples Section */
+        .examples-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .examples-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .example-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .example-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .example-header {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .example-header.positive {
+            color: #2ECC71;
+        }
+
+        .example-header.neutral {
+            color: #F1C40F;
+        }
+
+        .example-header.negative {
+            color: #E74C3C;
+        }
+
+        .example-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .example-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            border-left: 3px solid rgba(0, 212, 255, 0.3);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+            color: #3498DB;
+            flex-shrink: 0;
+        }
+
+        .info-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            border-radius: 16px;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-text {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sentiment-page {
+                padding: 4rem 1rem 2rem;
+            }
+
+            .sentiment-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .welcome-section {
+                padding: 1.5rem;
+            }
+
+            .video-header {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="premium-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>Neural<strong>AI</strong></span>
+            </div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/about">About</a>
+                <a href="/youtube-sentiment" class="active">
+                    <i class="fas fa-chart-line"></i> Results
+                </a>
+                <a href="/health" class="nav-cta">
+                    <i class="fas fa-heartbeat"></i> Status
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="sentiment-page">
+        <div class="sentiment-container">
+            
+            <!-- Header -->
+            <div class="sentiment-header">
+                <h1>📈 YouTube Sentiment Results</h1>
+                <p>View detailed sentiment analysis results and insights</p>
+            </div>
+
+            <!-- Welcome Section (shown when no results) -->
+            <div id="welcome" class="welcome-section">
+                <div class="welcome-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2 class="welcome-title">No Results Yet</h2>
+                <p class="welcome-text">
+                    Analyze YouTube videos to see detailed sentiment analysis results here. 
+                    Results will be displayed with interactive charts, statistics, and comment examples.
+                </p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary" onclick="goTo('/youtube-analyzer')">
+                        <i class="fas fa-video"></i>
+                        Analyze YouTube Video
+                    </button>
+                    <button class="btn btn-secondary" onclick="goTo('/dashboard')">
+                        <i class="fas fa-chart-pie"></i>
+                        Go to Dashboard
+                    </button>
+                </div>
+
+                <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 1.5rem;">
+                        ✨ What You Can Do Here
+                    </h3>
+                    <div class="features-grid">
+                        <div class="feature-box">
+                            <div class="feature-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="feature-title">Video Analysis</div>
+                            <div class="feature-desc">
+                                Analyze YouTube videos and fetch their comments for sentiment analysis
+                            </div>
+                        </div>
+
+                        <div class="feature-box">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="feature-title">Sentiment Breakdown</div>
+                            <div class="feature-desc">
+                                View pie and bar charts showing sentiment distribution with percentages
+                            </div>
+                        </div>
+
+                        <div class="feature-box">
+                            <div class="feature-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="feature-title">Comment Examples</div>
+                            <div class="feature-desc">
+                                See real comment examples for positive, neutral, and negative sentiments
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section (shown when results are available) -->
+            <div id="results" class="results-section">
+                
+                <!-- Video Info -->
+                <div class="video-info-card">
+                    <div class="video-header">
+                        <div class="video-thumbnail">
+                            <img id="result-thumbnail" src="" alt="Video Thumbnail">
+                        </div>
+                        <div class="video-details">
+                            <h2 id="result-title">Video Title</h2>
+                            <div class="video-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-user"></i>
+                                    <span id="result-channel">Channel</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span id="result-views">0</span> views
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-comments"></i>
+                                    <span id="result-comments">0</span> comments analyzed
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">😀</div>
+                        <div class="stat-label">Positive</div>
+                        <div class="stat-value" id="result-positive-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">😐</div>
+                        <div class="stat-label">Neutral</div>
+                        <div class="stat-value" id="result-neutral-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">😞</div>
+                        <div class="stat-label">Negative</div>
+                        <div class="stat-value" id="result-negative-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-label">Avg Compound</div>
+                        <div class="stat-value" id="result-compound">0</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div>
+                    <h2 style="font-size: 1.3rem; font-weight: 700; color: white; margin-bottom: 1.5rem;">
+                        📈 Sentiment Visualizations
+                    </h2>
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <div id="result-pie-chart"></div>
+                        </div>
+                        <div class="chart-card">
+                            <div id="result-bar-chart"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Examples -->
+                <div class="examples-section">
+                    <h2 class="examples-title">📝 Comment Examples</h2>
+                    <div class="examples-grid">
+                        <!-- Positive Examples -->
+                        <div class="example-card">
+                            <div class="example-header positive">
+                                <i class="fas fa-smile"></i> Positive Comments
+                            </div>
+                            <ul class="example-list" id="result-positive-examples">
+                                <li class="example-item">Loading examples...</li>
+                            </ul>
+                        </div>
+
+                        <!-- Neutral Examples -->
+                        <div class="example-card">
+                            <div class="example-header neutral">
+                                <i class="fas fa-meh"></i> Neutral Comments
+                            </div>
+                            <ul class="example-list" id="result-neutral-examples">
+                                <li class="example-item">Loading examples...</li>
+                            </ul>
+                        </div>
+
+                        <!-- Negative Examples -->
+                        <div class="example-card">
+                            <div class="example-header negative">
+                                <i class="fas fa-frown"></i> Negative Comments
+                            </div>
+                            <ul class="example-list" id="result-negative-examples">
+                                <li class="example-item">Loading examples...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="analyzeAnother()">
+                        <i class="fas fa-redo"></i> Analyze Another Video
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="premium-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-brain"></i>
+                <span>Neural<strong>AI</strong></span>
+            </div>
+            <div class="footer-info">
+                <p>📈 YouTube Sentiment Results - v4.0</p>
+                <p>💼 Powered by VADER Sentiment Analysis</p>
+                <p class="footer-copy">© 2025 Neural AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        /**
+         * ============================================
+         * YOUTUBE SENTIMENT RESULTS - SCRIPT v4.0
+         * ============================================
+         */
+
+        /**
+         * Display results from analysis
+         */
+        function displayResults(data) {
+            if (!data) {
+                showWelcome();
+                return;
+            }
+
+            // Video info
+            document.getElementById('result-title').textContent = data.video_title || 'Unknown';
+            document.getElementById('result-channel').textContent = data.channel_name || 'Unknown';
+            document.getElementById('result-views').textContent = formatNumber(data.views || 0);
+            document.getElementById('result-comments').textContent = data.total_comments || 0;
+            
+            if (data.thumbnail_url) {
+                document.getElementById('result-thumbnail').src = data.thumbnail_url;
+            }
+
+            // Statistics
+            document.getElementById('result-positive-count').textContent = data.positive || 0;
+            document.getElementById('result-neutral-count').textContent = data.neutral || 0;
+            document.getElementById('result-negative-count').textContent = data.negative || 0;
+            document.getElementById('result-compound').textContent = (data.avg_compound || 0).toFixed(3);
+
+            // Charts
+            if (data.pie_chart) {
+                document.getElementById('result-pie-chart').innerHTML = data.pie_chart;
+            }
+            if (data.bar_chart) {
+                document.getElementById('result-bar-chart').innerHTML = data.bar_chart;
+            }
+
+            // Examples
+            displayExamples(data.examples);
+
+            // Show results, hide welcome
+            document.getElementById('welcome').style.display = 'none';
+            document.getElementById('results').classList.add('active');
+        }
+
+        /**
+         * Display example comments
+         */
+        function displayExamples(examples) {
+            if (!examples) return;
+
+            document.getElementById('result-positive-examples').innerHTML = 
+                examples.positive && examples.positive.length > 0
+                    ? examples.positive.map(ex => `<li class="example-item">• ${ex}...</li>`).join('')
+                    : '<li class="example-item">No examples</li>';
+
+            document.getElementById('result-neutral-examples').innerHTML = 
+                examples.neutral && examples.neutral.length > 0
+                    ? examples.neutral.map(ex => `<li class="example-item">• ${ex}...</li>`).join('')
+                    : '<li class="example-item">No examples</li>';
+
+            document.getElementById('result-negative-examples').innerHTML = 
+                examples.negative && examples.negative.length > 0
+                    ? examples.negative.map(ex => `<li class="example-item">• ${ex}...</li>`).join('')
+                    : '<li class="example-item">No examples</li>';
+        }
+
+        /**
+         * Show welcome section
+         */
+        function showWelcome() {
+            document.getElementById('welcome').style.display = 'block';
+            document.getElementById('results').classList.remove('active');
+        }
+
+        /**
+         * Format large numbers
+         */
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        /**
+         * Navigate to page
+         */
+        function goTo(path) {
+            window.location.href = path;
+        }
+
+        /**
+         * Analyze another video
+         */
+        function analyzeAnother() {
+            goTo('/youtube-analyzer');
+        }
+
+        /**
+         * Check for results on page load
+         */
+        window.addEventListener('load', () => {
+            // Check if there's data in sessionStorage or URL params
+            const storedData = sessionStorage.getItem('youtube_results');
+            if (storedData) {
+                try {
+                    const data = JSON.parse(storedData);
+                    displayResults(data);
+                } catch (e) {
+                    console.error('Error parsing stored data:', e);
+                    showWelcome();
+                }
+            } else {
+                showWelcome();
+            }
+        });
+
+        // Smooth animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.stat-card, .chart-card, .example-card').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

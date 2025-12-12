@@ -1,0 +1,101 @@
+# ============================================
+# NEURAL AI v4.0 - COMPLETE REQUIREMENTS
+# ============================================
+# YouTube Sentiment & Trend Prediction System
+# Production Ready - November 5, 2025
+# ============================================
+
+# ============================================
+# CORE WEB FRAMEWORK
+# ============================================
+Flask==2.3.3
+Flask-CORS==4.0.0
+Werkzeug==2.3.7
+click==8.1.6
+
+# ============================================
+# DATA PROCESSING & ANALYSIS
+# ============================================
+numpy==1.24.3
+pandas==2.0.3
+scipy==1.11.2
+
+# ============================================
+# MACHINE LEARNING & AI
+# ============================================
+scikit-learn==1.3.0
+transformers==4.31.0
+torch==2.0.1
+xgboost==1.7.6
+joblib==1.3.1
+
+# ============================================
+# NATURAL LANGUAGE PROCESSING
+# ============================================
+nltk==3.8.1
+vaderSentiment==3.3.2
+textblob==0.17.1
+
+# ============================================
+# YOUTUBE & API
+# ============================================
+google-api-python-client==2.95.0
+google-auth-oauthlib==1.0.0
+google-auth-httplib2==0.1.1
+requests==2.31.0
+yt-dlp==2023.10.13
+
+# ============================================
+# VISUALIZATION & PLOTTING
+# ============================================
+plotly==5.15.0
+matplotlib==3.7.2
+seaborn==0.12.2
+
+# ============================================
+# UTILITIES & HELPERS
+# ============================================
+python-dotenv==1.0.0
+Pillow==10.0.0
+
+# ============================================
+# PRODUCTION & DEPLOYMENT
+# ============================================
+gunicorn==21.2.0
+python-multipart==0.0.6
+
+# ============================================
+# LOGGING & MONITORING
+# ============================================
+# (Already included in Python standard library)
+
+# ============================================
+# OPTIONAL: DATA STORAGE
+# ============================================
+# SQLAlchemy==2.0.20
+# psycopg2-binary==2.9.7
+# pymongo==4.4.1
+
+# ============================================
+# OPTIONAL: ASYNC & CACHING
+# ============================================
+# redis==5.0.0
+# celery==5.3.1
+
+# ============================================
+# DEVELOPMENT & TESTING (Optional)
+# ============================================
+# pytest==7.4.0
+# pytest-cov==4.1.0
+# black==23.9.1
+# flake8==6.0.0
+# pylint==2.17.5
+
+# ============================================
+# NOTES:
+# ============================================
+# 1. Install with: pip install -r requirements.txt
+# 2. For development, uncomment optional packages
+# 3. For production, use only production section
+# 4. Update versions as needed for compatibility
+# 5. Test thoroughly after updates
