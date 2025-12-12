@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A comprehensive machine learning system for predicting YouTube video virality and analyzing comment sentiment using DistilBERT, XGBoost, and VADER sentiment analysis.
-
+##Appication link: " https://huggingface.co/spaces/Danielchris145/youtube-trend-sentiment-analysis "
 ---
 
 ## 📋 Table of Contents
